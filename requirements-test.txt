@@ -1,0 +1,9 @@
+pytest
+pytest-asyncio
+pytest-xdist
+requests
+playwright
+pytest-playwright
+pillow
+opencv-python-headless
+pydantic
