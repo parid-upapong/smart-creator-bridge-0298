@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  api:
+    build: ./services/api
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgres://user:pass@postgres:5432/overlord
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - postgres
+      - redis
+
+  worker-vision:
+    build: ./workers/vision
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    environment:
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
+    depends_on:
+      - rabbitmq
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: overlord
+      POSTGRES_PASSWORD: pass
+
+  redis:
+    image: redis:7-alpine
