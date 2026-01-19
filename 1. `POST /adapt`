@@ -1,0 +1,5 @@
+{
+  "project_id": 101,
+  "platforms": ["TikTok", "Instagram_Reels"],
+  "source_url": "s3://raw-uploads/master_video_01.mp4"
+}
