@@ -1,0 +1,25 @@
+graph TD
+    User((User/Creator)) -->|Upload/Request| API[API Gateway - NestJS]
+    API -->|Auth/Meta| DB[(PostgreSQL)]
+    API -->|Store| S3[S3 Source Bucket]
+    
+    S3 -->|Event| Orchestrator[Workflow Orchestrator - Temporal.io]
+    
+    Orchestrator -->|Dispatch| Queue{Message Broker - RabbitMQ}
+    
+    subgraph "AI Worker Cluster (GPU/CPU)"
+        Worker1[Audio Worker: Whisper]
+        Worker2[Visual Worker: YOLO/SAM]
+        Worker3[Text Worker: LLM]
+    end
+    
+    Queue --> Worker1
+    Queue --> Worker2
+    Queue --> Worker3
+    
+    Worker1 & Worker2 & Worker3 -->|Metadata| Redis[(Redis State)]
+    
+    Redis --> Assembly[Assembly Worker: FFmpeg/Editly]
+    Assembly -->|Final Export| S3_Out[S3 Optimized Bucket]
+    S3_Out --> API
+    API -->|Notify| User
