@@ -1,0 +1,84 @@
+openapi: 3.0.0
+info:
+  title: OVERLORD Adaptation Engine API
+  version: 1.0.0
+  description: API for managing cross-platform content transformations.
+
+paths:
+  /adaptation/jobs:
+    post:
+      summary: Create a new content adaptation job
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdaptationRequest'
+      responses:
+        '202':
+          description: Job accepted and queued.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  job_id:
+                    type: string
+                  status:
+                    type: string
+                    example: "processing"
+
+components:
+  schemas:
+    AdaptationRequest:
+      type: object
+      required:
+        - source_url
+        - target_platforms
+      properties:
+        source_url:
+          type: string
+          format: uri
+          description: URL of the master asset (Video, Audio, or Doc).
+        brand_id:
+          type: string
+          description: Reference to the user's Brand Kit.
+        target_platforms:
+          type: array
+          items:
+            type: string
+            enum: [tiktok, linkedin_post, youtube_shorts, instagram_reel, twitter_thread]
+        ai_settings:
+          type: object
+          properties:
+            reframe_strategy:
+              type: string
+              enum: [subject_center, heat_map, static_center]
+            tone_adjustment:
+              type: string
+              example: "professional_yet_witty"
+            subtitle_style:
+              type: string
+              example: "alex_hormozi_style"
+
+    JobStatus:
+      type: object
+      properties:
+        job_id:
+          type: string
+        progress:
+          type: integer
+          minimum: 0
+          maximum: 100
+        outputs:
+          type: array
+          items:
+            type: object
+            properties:
+              platform:
+                type: string
+              download_url:
+                type: string
+              caption:
+                type: string
+              metadata:
+                type: object
