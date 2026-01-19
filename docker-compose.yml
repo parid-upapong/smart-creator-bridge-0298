@@ -1,42 +1,42 @@
 version: '3.8'
 
 services:
-  api:
-    build: ./services/api
+  db:
+    image: postgres:15-alphine
+    environment:
+      - POSTGRES_USER=overlord_admin
+      - POSTGRES_PASSWORD=overlord_pass
+      - POSTGRES_DB=overlord_metadata
     ports:
-      - "3000:3000"
-    environment:
-      - DATABASE_URL=postgres://user:pass@postgres:5432/overlord
-      - REDIS_URL=redis://redis:6379
-    depends_on:
-      - postgres
-      - redis
-
-  worker-vision:
-    build: ./workers/vision
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
-    environment:
-      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
-    depends_on:
-      - rabbitmq
-
-  rabbitmq:
-    image: rabbitmq:3-management
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-
-  postgres:
-    image: postgres:15-alpine
-    environment:
-      POSTGRES_DB: overlord
-      POSTGRES_PASSWORD: pass
+      - "5432:5432"
 
   redis:
-    image: redis:7-alpine
+    image: redis:7-alphine
+    ports:
+      - "6379:6379"
+
+  api:
+    build: .
+    command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://overlord_admin:overlord_pass@db/overlord_metadata
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+
+  worker:
+    build: .
+    command: celery -A src.tasks.worker worker --loglevel=info
+    volumes:
+      - .:/app
+    environment:
+      - DATABASE_URL=postgresql://overlord_admin:overlord_pass@db/overlord_metadata
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - redis
+      - db
