@@ -1,6 +1,10 @@
-opencv-python
-ultralytics
-numpy
-filterpy
-moviepy
-torch
+fastapi
+uvicorn
+celery
+redis
+sqlalchemy
+psycopg2-binary
+pydantic
+pydantic-settings
+python-multipart
+boto3
