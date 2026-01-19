@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brand-primary: #8B5CF6;
+  --brand-secondary: #D8B4FE;
+}
+
+body {
+  background: #09090b;
+}
+
+.glass-panel {
+  @apply bg-zinc-900/50 border border-zinc-800 backdrop-blur-md;
+}
+
+.studio-grid {
+  display: grid;
+  grid-template-columns: 320px 1fr 380px;
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.ai-processing {
+  animation: pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
