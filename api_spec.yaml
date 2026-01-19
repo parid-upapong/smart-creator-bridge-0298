@@ -1,0 +1,49 @@
+openapi: 3.0.0
+info:
+  title: Overlord AI Creative Automation API
+  version: 1.0.0
+  description: API for automating the transmutation of creative content.
+
+paths:
+  /v1/transform:
+    post:
+      summary: Transform raw content into multi-platform assets
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                source_url:
+                  type: string
+                platforms:
+                  type: array
+                  items:
+                    type: string
+                brand_id:
+                  type: string
+      responses:
+        '202':
+          description: Transformation job accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  job_id:
+                    type: string
+                  estimated_completion:
+                    type: integer
+
+  /v1/jobs/{job_id}:
+    get:
+      summary: Get status and download links for generated assets
+      parameters:
+        - name: job_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
