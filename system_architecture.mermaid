@@ -1,0 +1,16 @@
+graph TD
+    A[Source Content: 4K Video/Raw Audio] --> B{AI Orchestrator}
+    B --> C[Vision Engine: Scene Detection]
+    B --> D[Audio Engine: Transcription & Sentiment]
+    B --> E[Semantic Engine: Narrative Extraction]
+    
+    C & D & E --> F[Contextual Metadata Store]
+    
+    F --> G[Platform Adapters]
+    
+    G --> H[TikTok/Reels: Vertical + Captions]
+    G --> I[YouTube: Highlight Reels + SEO]
+    G --> J[Twitter/LinkedIn: Text Summaries + Clips]
+    
+    H & I & J --> K[Direct Publishing API]
+    K --> L[Creator Dashboard: Analytics & Approval]
